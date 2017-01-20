@@ -20,16 +20,7 @@ import com.xmszit.voip.web.servletListener.ApplicationContextUtil;
 
 import net.sf.json.JSONObject;
 
-/**
- * @ProjectName:voip
- * @ClassName: SmartIvr
- * @Description: 
- * @UpdateUser: 
- * @UpdateDate: 
- * @UpdateRemark: 
- * @Copyright: 2018 厦门晟中信息技术有限公司
- * @versions:1.0
- */
+
 @Controller
 @RequestMapping("/voip")
 public class SmartIvr extends BaseAction{

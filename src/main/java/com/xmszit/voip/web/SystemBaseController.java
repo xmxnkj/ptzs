@@ -40,16 +40,7 @@ import com.xmszit.voip.web.utils.CommonExport;
 import bsh.StringUtil;
 
 
-/**
- * @ProjectName:lightning
- * @ClassName: BaseController
- * @Description: 
- * @UpdateUser: 
- * @UpdateDate: 
- * @UpdateRemark: 
- * @Copyright: 2017 厦门晟中信息技术有限公司
- * @versions:1.0
- */
+
 public abstract class SystemBaseController<T extends DomainEntity, Q extends EntityQueryParam, M extends DomainEntity> extends BaseAction{
 	
 	protected String getListPage() {
