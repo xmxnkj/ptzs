@@ -32,7 +32,16 @@ import com.xmszit.voip.outBound.service.AutodialerTaskService;
 
 import net.sf.json.JSONObject;
 
-
+/**
+ * @ProjectName:voip
+ * @ClassName: FinanceFlow
+ * @Description: 
+ * @UpdateUser: 
+ * @UpdateDate: 
+ * @UpdateRemark: 
+ * @Copyright: 2017 厦门西牛科技有限公司
+ * @versions:1.0
+ */
 @Service("financeFlow")
 @Scope("prototype")
 public class FinanceFlow {
