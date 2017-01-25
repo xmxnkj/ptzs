@@ -23,7 +23,16 @@ import com.xmszit.voip.system.service.RemindService;
 import com.xmszit.voip.web.utils.ExportExcel;
 
 
-
+/**
+ * @ProjectName:voip
+ * @ClassName: MainController
+ * @Description: 
+ * @UpdateUser: 
+ * @UpdateDate: 
+ * @UpdateRemark: 
+ * @Copyright: 2017 厦门西牛科技有限公司
+ * @versions:1.0
+ */
 
 @Controller
 public class MainController extends BaseAction {
