@@ -28,20 +28,21 @@ import com.hsit.common.kfbase.entity.DomainEntity;
 import com.hsit.common.kfbase.entity.EntityQueryParam;
 import com.hsit.common.service.AppBaseService;
 import com.hsit.common.uac.entity.UserRoleType;
-import com.xmszit.voip.client.entity.ClientUser;
 import com.xmszit.voip.common.entity.VoipEntity;
 import com.xmszit.voip.common.entity.query.VoipQuery;
 import com.xmszit.voip.customer.web.editor.DateEditor;
+import com.xmszit.voip.common.entity.query.VoipQuery;
 import com.xmszit.voip.global.Constants;
 import com.xmszit.voip.web.models.ListJson;
 import com.xmszit.voip.web.models.ResultJson;
 import com.xmszit.voip.web.utils.CommonExport;
+import com.xmszit.voip.web.utils.ExportExcel;
 
 import bsh.StringUtil;
 
 
 /**
- * @ProjectName:lightning
+ * @ProjectName:voip
  * @ClassName: BaseController
  * @Description: 
  * @UpdateUser: 
@@ -50,7 +51,7 @@ import bsh.StringUtil;
  * @Copyright: 2017 厦门西牛科技有限公司
  * @versions:1.0
  */
-public abstract class SystemBaseController<T extends DomainEntity, Q extends EntityQueryParam, M extends DomainEntity> extends BaseAction{
+public abstract class BaseController<T extends DomainEntity, Q extends EntityQueryParam, M extends DomainEntity> extends BaseAction{
 	
 	protected String getListPage() {
 		if(this.getClass().isAnnotationPresent(RequestMapping.class)){
@@ -67,8 +68,10 @@ public abstract class SystemBaseController<T extends DomainEntity, Q extends Ent
 	
 	@RequestMapping("/showPage")
 	public ModelAndView showPage(String pageName, String id){
+		//Boolean viewCost = userHasOperate(Constants.OP_VIEW_COST);
 		ModelAndView modelAndView = new ModelAndView(getPagePath()+"/" + pageName, "params", getRequestParams());
 		modelAndView.addObject("id", id);
+		//modelAndView.addObject("ViewCost", viewCost);
 		return modelAndView;
 	}
 	
@@ -87,7 +90,11 @@ public abstract class SystemBaseController<T extends DomainEntity, Q extends Ent
 	
 	@RequestMapping("/showList")
 	public ModelAndView showList(){
-		return new ModelAndView(getListPage(), "params", getRequestParams());
+		//Boolean viewCost = userHasOperate(Constants.OP_VIEW_COST);
+		ModelAndView modelAndView = new ModelAndView(getListPage(), "params", getRequestParams());
+		//modelAndView.addObject("ViewCost", viewCost);
+		initPage(modelAndView);
+		return modelAndView;
 	}
 	
 	protected String getEditPage() {
@@ -105,8 +112,10 @@ public abstract class SystemBaseController<T extends DomainEntity, Q extends Ent
 	
 	@RequestMapping("/showEdit")
 	public ModelAndView showEdit(String id){
+		//Boolean viewCost = userHasOperate(Constants.OP_VIEW_COST);
 		ModelAndView modelAndView = new ModelAndView(getEditPage(), "id", id);
 		modelAndView.getModel().put("params", getRequestParams());
+		//modelAndView.addObject("ViewCost", viewCost);
 		return modelAndView;
 	}
 	
@@ -124,6 +133,11 @@ public abstract class SystemBaseController<T extends DomainEntity, Q extends Ent
 				query = clazz.newInstance();
 			}
 			
+			if (query instanceof VoipQuery) {
+				((VoipQuery) query).setClientId(getLoginClientId());
+				dealQuery(query);
+			}
+				
 			if (rows!=null && rows>0) {
 				
 				if (page==null) {
@@ -132,9 +146,11 @@ public abstract class SystemBaseController<T extends DomainEntity, Q extends Ent
 				query.setPage(page, rows);
 			}
 			
-			beforeQuery();
+			beforeQuery(query);
 			
 			List<T> entities = getService().getEntities(query);
+			
+			initQueryResult(entities);
 			
 			Class<T> clazz = (Class<T>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 			Class<M> clazm = (Class<M>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[2];
@@ -155,9 +171,7 @@ public abstract class SystemBaseController<T extends DomainEntity, Q extends Ent
 				}
 				listJson = new ListJson(models);
 			}
-			
-			initQueryResult();
-			
+			afterQuery(query,listJson);
 			
 			listJson.setPaging(query.getPaging());
 			return listJson;
@@ -221,7 +235,14 @@ public abstract class SystemBaseController<T extends DomainEntity, Q extends Ent
 			return new ResultJson(e);
 		}
 	}
-
+	
+	protected boolean canDeleteGlobal() {
+		return false;
+	}
+	
+	protected boolean needShopId() {
+		return true;
+	}
 	
 	@RequestMapping(value="/saveJson")
 	@ResponseBody
@@ -233,7 +254,6 @@ public abstract class SystemBaseController<T extends DomainEntity, Q extends Ent
 		if (entity==null) {
 			return new ResultJson(false);
 		}
-		
 		//以name为参数，会莫名其妙的出错，故用objName代替
 		if (!StringUtils.isEmpty(objName)) {
 			entity.setName(objName);
@@ -243,19 +263,18 @@ public abstract class SystemBaseController<T extends DomainEntity, Q extends Ent
 		if (resultJson!=null) {
 			return resultJson;
 		}
-		
+		dealVoipEntity(entity);
 		boolean adding = StringUtils.isEmpty(entity.getId());
-		initEntityForSave();
+		initEntityForSave(entity);
 		if (adding) {
-			initEntityForAdd();
+			initEntityForAdd(entity);
 		}else{
-			initEntityForEdit();
+			initEntityForEdit(entity);
 		}
 		
 		try{
 			entity.setId(getService().save(entity));
 			afterEntitySaved();
-			
 			ResultJson json = new ResultJson(true);
 			json.setEntity(entity.getId());
 			return json;
@@ -275,13 +294,16 @@ public abstract class SystemBaseController<T extends DomainEntity, Q extends Ent
 			if (getService()==null) {
 				return new ResultJson(false);
 			}
-
+			if (query instanceof VoipQuery) {
+				((VoipQuery) query).setClientId(getLoginClientId());
+				dealQuery(query);
+			}
 			if (getService()==null) {
 				return new ListJson(false);
 			}
 			
 			List<T> entities = getService().getEntities(query);
-			String fillName = getExportFileName(entities);
+			String fillName = getExportFileName(entities);//getExportFileName(entities);
 			if (fillName == null || fillName.equals("")) {
 				json.setSuccess(false);
 				json.setMessage("数据异常！");
@@ -294,12 +316,12 @@ public abstract class SystemBaseController<T extends DomainEntity, Q extends Ent
 		}
 		return json;
 	}
-
+	
 	public String getExportFileName(List<T> entities){
 		CommonExport<T> commonExport = new CommonExport<>();
 		if (entities!=null && entities.size() > 0) {
 			try {
-				return commonExport.getExportFileName(entities,entities.get(0),userHasOperate(Constants.OP_VIEW_COST));
+				return commonExport.getExportFileName(entities,entities.get(0),null);//userHasOperate(Constants.OP_VIEW_COST)
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -307,12 +329,85 @@ public abstract class SystemBaseController<T extends DomainEntity, Q extends Ent
 		}
 		return null;
 	}
+	/**
+	 * 导出下载
+	 * @param fileName
+	 * @throws IOException
+	 */
+	@RequestMapping(value="/loadExcel")
+	@ResponseBody
+	public void loadExcel(String fileName) throws IOException{
+		ExportExcel excel = new ExportExcel();
+		excel.loadExcel(fileName);
+		return;
+	}
 	
-	protected void initQueryResult() {
+	
+	protected void dealQuery(Q entity) {
+		if (entity instanceof VoipQuery) {
+			VoipQuery voipEntity = (VoipQuery)entity;
+			voipEntity.setClientId(getLoginClientId());
+			/*if(StringUtils.isEmpty(entity.getId())
+					&& needShopId()){
+				try {
+					Method shopMethod = entity.getClass().getMethod("setShopId", String.class);
+					if (shopMethod!=null) {
+						shopMethod.invoke(entity, getLoginShopId());
+					}
+				} catch (NoSuchMethodException | SecurityException e) {
+				} catch (IllegalAccessException e) {
+				} catch (IllegalArgumentException e) {
+				} catch (InvocationTargetException e) {
+				}
+			}*/
+		}
+	}
+	
+	protected void dealVoipEntity(T entity) {
+		if (entity instanceof VoipEntity) {
+			VoipEntity voipEntity = (VoipEntity)entity;
+			voipEntity.setClientId(getLoginClientId());
+			/*if(StringUtils.isEmpty(entity.getId())){
+				try {
+					Method shopMethod = entity.getClass().getMethod("seClientId", Client.class);
+					if (shopMethod!=null) {
+						shopMethod.invoke(entity, getLoginShop());
+					}
+				} catch (NoSuchMethodException | SecurityException e) {
+				} catch (IllegalAccessException e) {
+				} catch (IllegalArgumentException e) {
+				} catch (InvocationTargetException e) {
+				}
+				try {
+					Method shopMethod = entity.getClass().getMethod("setShopId", String.class);
+					if (shopMethod!=null) {
+						shopMethod.invoke(entity, getLoginShopId());
+					}
+				} catch (NoSuchMethodException | SecurityException e) {
+				} catch (IllegalAccessException e) {
+				} catch (IllegalArgumentException e) {
+				} catch (InvocationTargetException e) {
+				}
+				try {
+					Method shopMethod = entity.getClass().getMethod("setOpUser", ClientUser.class);
+					if (shopMethod!=null) {
+						shopMethod.invoke(entity, getLoginClientUser());
+					}
+				} catch (NoSuchMethodException | SecurityException e) {
+				} catch (IllegalAccessException e) {
+				} catch (IllegalArgumentException e) {
+				} catch (InvocationTargetException e) {
+				}
+				
+			}*/
+		}
+		
+	}
+	protected void initQueryResult(List<T> entities) {
 		
 	}
 	
-	protected void beforeQuery() {
+	protected void beforeQuery(Q query) {
 		
 	}
 	
@@ -320,19 +415,23 @@ public abstract class SystemBaseController<T extends DomainEntity, Q extends Ent
 		return null;
 	}
 	
+	protected void initPage(ModelAndView modelAndView){
+		
+	}
+	
 	protected void afterEntitySaved() {
 		
 	}
 	
-	protected void initEntityForAdd() {
+	protected void initEntityForAdd(T entity) {
 		
 	}
 	
-	protected void initEntityForEdit() {
+	protected void initEntityForEdit(T entity) {
 		
 	}
 	
-	protected void initEntityForSave() {
+	protected void initEntityForSave(T entity) {
 		
 	}
 	
@@ -340,6 +439,9 @@ public abstract class SystemBaseController<T extends DomainEntity, Q extends Ent
 		
 	}
 	
+	protected void afterQuery(Q query,ListJson listJson) {
+		
+	}
 	
 	protected boolean isSysAdmin() {
 		return getLoginUser()!=null && getLoginUser().getUserRoleType()==UserRoleType.SysAdmin;
@@ -363,8 +465,6 @@ public abstract class SystemBaseController<T extends DomainEntity, Q extends Ent
 	protected abstract AppBaseService<T, Q> getService();
 	
 	protected Logger logger;
-	
-	
 	
 	
 	@InitBinder

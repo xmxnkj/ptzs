@@ -20,7 +20,16 @@ import com.xmszit.voip.web.servletListener.ApplicationContextUtil;
 
 import net.sf.json.JSONObject;
 
-
+/**
+ * @ProjectName:voip
+ * @ClassName: SmartIvr
+ * @Description: 
+ * @UpdateUser: 
+ * @UpdateDate: 
+ * @UpdateRemark: 
+ * @Copyright: 2017 厦门西牛科技有限公司
+ * @versions:1.0
+ */
 @Controller
 @RequestMapping("/voip")
 public class SmartIvr extends BaseAction{
@@ -137,7 +146,7 @@ public class SmartIvr extends BaseAction{
 		}
 
 		//一段时间没响应
-		//{"calleeid":"999","callerid":"+8613328795928","callid":"db38dfc5-d1b5-46e9-9002-2270061f1f34","duration":44,"errorcode":0,"flowdata":"您好，我是晟中信息技术有限公司，我们楼盘很好！","flowid":"","hangup_disposition":"send_bye","notify":"leave"}
+		//{"calleeid":"999","callerid":"+8613328795928","callid":"db38dfc5-d1b5-46e9-9002-2270061f1f34","duration":44,"errorcode":0,"flowdata":"您好，我是厦门西牛科技有限公司，我们楼盘很好！","flowid":"","hangup_disposition":"send_bye","notify":"leave"}
 
 		
 		return map;
@@ -218,7 +227,7 @@ public class SmartIvr extends BaseAction{
 	 * 根据流程，组装对应的放音json
 	 * @param flow   放音音频
 	 * @author cxy
-     * @version 2018-04-15
+     * @version 2017-04-15
 	 */
 	public Map<String,Object> response(String flow,String text, String sound){
 		Map<String,Object> map = new HashMap<String, Object>();
@@ -251,7 +260,7 @@ public class SmartIvr extends BaseAction{
 	 * 根据流程，组装对应的放音json
 	 * @param flow   放音音频
 	 * @author cxy
-     * @version 2018-04-15
+     * @version 2017-04-15
 	 */
 	public Map<String,Object> fangyin(String flow){
 		Map<String,Object> map = new HashMap<String, Object>();
@@ -276,7 +285,7 @@ public class SmartIvr extends BaseAction{
 	 * 放音后挂断
 	 * @param voice  结束语
 	 * @author cxy
-     * @version 2018-04-15
+     * @version 2017-04-15
 	 * @return
 	 */
 	public Map<String,Object> hangUp(String voice){
@@ -298,7 +307,7 @@ public class SmartIvr extends BaseAction{
 	/**
 	 * @Description(解析request转为json) @param request
 	 * @author cxy
-     * @version 2018-04-19
+     * @version 2017-04-19
 	 */
 	public static String getReqMsg(HttpServletRequest request) {
 		InputStream in;
