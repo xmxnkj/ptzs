@@ -22,7 +22,7 @@ public interface DeptService extends BusinessBaseService<Dept, DeptQuery>{
 	public void changeSonDeptLevel(Dept dept,Integer difference);
 	
 	/**
-	 * 是否为下级部门
+	 * 远程控制
 	 * @return
 	 */
 	public boolean isSonDept(String ownDeptId,String higherDeptId);

@@ -14,7 +14,7 @@ public interface LineService extends BusinessBaseService<Line, LineQuery>{
 	public Integer getMaxNumberLine(String deptId);
 	
 	/**
-	 * 该坐席当前是否有线路	true 包含 
+	 * 是否有线路	true 包含 
 	 * @param clientUserId
 	 * @return
 	 */
