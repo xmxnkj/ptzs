@@ -190,12 +190,7 @@ public class VoiceTemplateController extends BaseController<VoiceTemplate, Voice
 		}
 	}
 	
-	/**
-	 * 上传压缩文件
-	 * @param file 压缩文件
-	 * @param id 上传人id
-	 * @return
-	 */
+	
 	@RequestMapping("/uploadFile")
 	@ResponseBody
 	public ResultJson uploadFile(MultipartFile file,String id, HttpServletRequest request, HttpServletResponse response,

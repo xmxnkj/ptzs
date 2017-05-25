@@ -125,7 +125,7 @@ public class UserRoleController extends BaseController<UserRole, UserRoleQuery, 
 		}
 		List<UserRole> listRole = getService().getEntities(query);
 		if (listRole != null && listRole.size() > 0) {
-			throw new ApplicationException("该角色名已经存在，请重新确认！");
+			throw new ApplicationException("名已经存在，请重新确认！");
 		}
 		try{
 			entity.setClientId(getLoginClientId());
@@ -157,14 +157,13 @@ public class UserRoleController extends BaseController<UserRole, UserRoleQuery, 
 			return new ResultJson(false);
 		}
 		try{
-			//删除之前判断是否有员工具备该角色
 			ClientAndRoleQuery query = new ClientAndRoleQuery();
 			query.setUserRoleId(id);
 			if (clientAndRoleService.getEntities(query).size() > 0) {
-				throw new ApplicationException("该角色正被使用！");
+				throw new ApplicationException("正被使用！");
 			}
-			orService.deleteOperateRole(id);//删除角色权限
-			getService().deleteRole(id);//删除角色
+			orService.deleteOperateRole(id);
+			getService().deleteRole(id);
 			return new ResultJson(true);
 		}catch(Exception e){
 			return new ResultJson(e);
