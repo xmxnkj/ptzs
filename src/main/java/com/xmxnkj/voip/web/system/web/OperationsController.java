@@ -92,7 +92,7 @@ public class OperationsController extends SystemBaseController<Operation, Operat
 	@Autowired
 	private AceService aceService; 
 	/**
-	 * 获取当前所属权限
+	 * 获取远程控制
 	 * @param query
 	 * @param rows
 	 * @param page
@@ -163,7 +163,7 @@ public class OperationsController extends SystemBaseController<Operation, Operat
 		            map.put("grade",treeChild.getDescription()); 
 		            map.put("children", createComboTreeChildren_All(entities, treeChild.getId(),isAdmin));  
 		        }  
-		        if (map != null && (isAdmin || (!isAdmin && !treeChild.getName().equals("收款设置")))){
+		        if (map != null && (isAdmin || (!isAdmin && !treeChild.getName().equals("远程设置")))){
 		        		childList.add(map);
 		        }  
 		    }  

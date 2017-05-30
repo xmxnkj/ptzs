@@ -44,7 +44,7 @@ public class SeatGroupController extends BaseController<SeatGroup, SeatGroupQuer
 			if(StringUtils.isNotEmpty(seatId) && StringUtils.isNotEmpty(clientUserIds) && StringUtils.isNotEmpty(deptId)){
 				SeatGroup seatGroup = service.getById(seatId);
 				if(seatGroup==null){
-					listJson.setMessage("该坐席不存在！");
+					listJson.setMessage("不存在！");
 					listJson.setSuccess(false);
 					return listJson;
 				}
@@ -62,7 +62,6 @@ public class SeatGroupController extends BaseController<SeatGroup, SeatGroupQuer
 						}else{
 							/*//判断是否有线路
 							if(lineService.hasLineOnCurrent(clientUser.getId())){
-								listJson.setMessage("该坐席已包含电话线路，请先更改线路的所属座席！");
 								listJson.setSuccess(false);
 								return listJson;
 							}*/
@@ -115,7 +114,7 @@ public class SeatGroupController extends BaseController<SeatGroup, SeatGroupQuer
 			clientUserQuery.setIsOnSeatGroup(IsOnSeatGroup.YES);
 			if(clientUserService.getEntityCount(clientUserQuery)>0){
 				listJson.setSuccess(false);
-				listJson.setMessage("请先移除该坐席组下的成员！");
+				listJson.setMessage("请先移除！");
 				return listJson;
 			}
 			getService().deleteById(id);
