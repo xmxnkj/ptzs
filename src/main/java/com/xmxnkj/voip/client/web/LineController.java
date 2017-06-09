@@ -61,7 +61,7 @@ public class LineController extends BaseController<Line, LineQuery, Line>{
 				Dept dept = clientUser.getDept();
 				if(dept==null){
 					result.put("success", false);
-					result.put("errorMessage", "该部门不存在或者该坐席还未加入部门！");
+					result.put("errorMessage", "该远程部门不存在");
 					return result;
 				}else{
 					

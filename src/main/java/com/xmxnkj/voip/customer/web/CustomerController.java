@@ -80,12 +80,10 @@ public class CustomerController extends BaseController<Customer, CustomerQuery, 
 		if (dept!=null&&
 				!StringUtils.isEmpty(dept.getClientUserId())&&
 				getLoginClientUserId().indexOf(dept.getClientUserId()) > -1) {
-			//是部门领导（查询当前部门及底下部门所有坐席的customer）
 			if (query.getType()==0) {
 				query.setDeptId(dept.getId());
 			}
 		}else {
-			//不是部门领导（只查询当前坐席地下的customer）
 			if (query.getType()==0) {
 				query.setClientUserId(getLoginClientUserId());
 			}
@@ -113,7 +111,7 @@ public class CustomerController extends BaseController<Customer, CustomerQuery, 
 		return modelAndView;
 	}
 	/**
-	 * 客户导入
+	 * 导入
 	 * @param file
 	 * @param type
 	 * @return
@@ -189,7 +187,7 @@ public class CustomerController extends BaseController<Customer, CustomerQuery, 
 			privateSea = privateSea-havaSea-1;*/
 			Integer privateSea = countOverCust(clientUser);
 			if (privateSea-1 < 0) {
-				throw new ApplicationException("当期坐席的坐席库已满！");
+				throw new ApplicationException("已满！");
 			}
 			entity.setClientUser(getLoginClientUser());
 		}
@@ -199,21 +197,17 @@ public class CustomerController extends BaseController<Customer, CustomerQuery, 
 	protected void initEntityForSave(Customer entity) {
 		// TODO Auto-generated method stub
 		if (StringUtils.isEmpty(entity.getMobile())) {
-			throw new ApplicationException("电话号码不能为空！");
+			throw new ApplicationException("号码不能为空！");
 		}else {
 			if (getService().isExistCustomer(entity.getMobile(), getLoginClientId(),entity.getId())) {
-				throw new ApplicationException("电话号码重复！");
+				throw new ApplicationException("号码重复！");
 			}
 			
 		}
 		super.initEntityForSave(entity);
 	}
 	
-	/**
-	 * 开放至公海
-	 * @param customerList
-	 * @return
-	 */
+	
 	@RequestMapping("/open")
 	@ResponseBody
 	public ResultJson open(CustomerList customerList) {
@@ -232,21 +226,19 @@ public class CustomerController extends BaseController<Customer, CustomerQuery, 
 			}
 		}
 		if(StringUtils.isNotEmpty(openFailMessage.toString())){
-			openFailMessage.append(" 为私有客户，不能开放之公海!");
+			openFailMessage.append(" 为私有，不能开放!");
 			resultJson.setMessage(openFailMessage.toString());
 		}
 		return  resultJson;
 	}
 	
-	/**
-	 * 显示坐席
-	 */
+	
 	@RequestMapping("/showSeat")
 	@ResponseBody
 	public ListJson showSeat() {
 		ListJson json = new ListJson(true);
 		UserRoleQuery roleQuery = new UserRoleQuery();
-		roleQuery.setRoleName("坐席");
+		roleQuery.setRoleName("remote");
 		UserRole clientRole = userRoleService.getEntity(roleQuery);
 		if (clientRole!=null) {
 			ClientUserQuery clientUserQuery = new ClientUserQuery();
@@ -258,7 +250,7 @@ public class CustomerController extends BaseController<Customer, CustomerQuery, 
 		return json;
 	}
 	/**
-	 * 坐席分配
+	 * romote分配
 	 */
 	@RequestMapping("/distributionSeat")
 	@ResponseBody
@@ -290,7 +282,7 @@ public class CustomerController extends BaseController<Customer, CustomerQuery, 
 			}
 		}
 		if (privateSea < list.size()) {
-			throw new ApplicationException("当前坐席已超出可分配的客户数量！");
+			throw new ApplicationException("超出可！");
 		}
 		if (list!=null&&clientUser!=null) {
 			for (Customer customer : list) {
@@ -393,10 +385,8 @@ public class CustomerController extends BaseController<Customer, CustomerQuery, 
 		if (dept!=null&&
 				!StringUtils.isEmpty(dept.getClientUserId())&&
 				getLoginClientUserId().indexOf(dept.getClientUserId()) > -1) {
-			//是部门领导（计算当前部门及底下部门所有坐席的customer）
 			resultJson.setEntity(getService().countCustState(getLoginClientId(), null,dept.getId()));
 		}else {
-			//不是部门领导（只计算当前坐席地下的customer）
 			resultJson.setEntity(getService().countCustState(getLoginClientId(), getLoginClientUserId(),null));;
 		}
 		return resultJson;
@@ -422,7 +412,7 @@ public class CustomerController extends BaseController<Customer, CustomerQuery, 
 		return resultJson;
 	}
 	/**
-	 * 计算剩余坐席数量
+	 * 计算剩余remote量
 	 */
 	private Integer countOverCust(ClientUser clientUser){
 		Integer privateSea = clientUser.getPrivateSea()!=null?clientUser.getPrivateSea():0;//用户最大坐席数量

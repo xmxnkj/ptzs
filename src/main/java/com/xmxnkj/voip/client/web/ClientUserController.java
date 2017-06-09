@@ -157,7 +157,7 @@ public class ClientUserController extends BaseController<ClientUser, ClientUserQ
 	}
 	
 	/**
-	 * 保存角色
+	 * 保存
 	 * @param clientUser
 	 * @return
 	 */

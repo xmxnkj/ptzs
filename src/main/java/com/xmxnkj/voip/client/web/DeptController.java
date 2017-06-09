@@ -126,18 +126,18 @@ public class DeptController  extends BaseController<Dept, DeptQuery, Dept>{
 				clientUserQuery.setDeptId(dept.getId());
 				if(clientUserService.getEntityCount(clientUserQuery)>0){
 					listJson.setSuccess(false);
-					listJson.setMessage("部门还有成员！");
+					listJson.setMessage("不合法！");
 					return listJson;
 				}
 				//
 				if(getService().hasSonDept(dept.getId())){
 					listJson.setSuccess(false);
-					listJson.setMessage("部门含有子部门！");
+					listJson.setMessage("已经存在！");
 					return listJson;
 				}
 			}else{
 				listJson.setSuccess(false);
-				listJson.setMessage("该部门不存在！");
+				listJson.setMessage("不存在，请确认！");
 			}
 			
 		}catch(Exception e){

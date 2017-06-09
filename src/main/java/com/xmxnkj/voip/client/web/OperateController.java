@@ -38,7 +38,7 @@ public class OperateController extends BaseController<Operate, OperateQuery, Ope
 	private OperateRoleService roleService;
 	
 	/**
-	 * 保存权限
+	 * 远程权限
 	 * @return
 	 */
 	
