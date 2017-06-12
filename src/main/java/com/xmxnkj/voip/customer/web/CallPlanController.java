@@ -167,7 +167,7 @@ public class CallPlanController extends BaseController<CallPlan, CallPlanQuery, 
 			Integer privateSea = countOverCust(clientUser);
 			if (privateSea-1 < 0) {
 				json.put("isSuccess", false);
-				json.put("message", "当期坐席的坐席库已满！");
+				json.put("message", "已满！");
 				return json;
 			}
 			customer.setClientUser(getLoginClientUser());
@@ -233,7 +233,7 @@ public class CallPlanController extends BaseController<CallPlan, CallPlanQuery, 
 	}
 	
 	/**
-	 * 计算剩余坐席数量
+	 * 计算剩余数量
 	 */
 	private Integer countOverCust(ClientUser clientUser){
 		Integer privateSea = clientUser.getPrivateSea()!=null?clientUser.getPrivateSea():0;//用户最大坐席数量

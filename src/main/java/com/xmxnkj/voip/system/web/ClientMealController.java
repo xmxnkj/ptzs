@@ -77,10 +77,10 @@ public class ClientMealController extends SystemBaseController<ClientMeal, Clien
 			entity.setId(getService().save(entity));
 			String clientMealId = entity.getId();
 			List<OperateRole> list = entity.getOperateMeals();
-			operateRoleService.deleteOperateMeal(clientMealId);//删除权限
+			operateRoleService.deleteOperateMeal(clientMealId);//删除
 			StringBuffer mealContent = new StringBuffer("");
 			if (list != null) {
-				for (OperateRole operateRole : list) {//保存权限
+				for (OperateRole operateRole : list) {//保存
 					operateRole.setClientMealId(clientMealId);
 					mealContent.append(operateRole.getOperateName()+"|");
 					operateRoleService.save(operateRole);

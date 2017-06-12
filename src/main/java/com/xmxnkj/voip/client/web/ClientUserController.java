@@ -239,7 +239,7 @@ public class ClientUserController extends BaseController<ClientUser, ClientUserQ
 	}
 	
 	/**
-	 * 删除角色
+	 * 删除
 	 * @param clientUser
 	 * @return
 	 */
