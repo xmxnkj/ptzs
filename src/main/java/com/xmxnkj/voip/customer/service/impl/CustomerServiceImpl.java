@@ -36,7 +36,7 @@ public class CustomerServiceImpl extends BusinessBaseServiceImpl<Customer, Custo
 		return dao;
 	}
 	/**
-	 * 判断坐席是否超出可分配客户
+	 * 判断是否超出可分配
 	 * @param clientId
 	 * @param clientUser
 	 * @param num
@@ -58,7 +58,7 @@ public class CustomerServiceImpl extends BusinessBaseServiceImpl<Customer, Custo
 		Date date = new Date();
 		//判断是否超出给坐席可分配坐席：
 		if (judgePrivateSea(clientId, clientUser, sheet.getLastRowNum())) {
-			throw new ApplicationException("当前坐席已超出可分配客户容量!");
+			throw new ApplicationException("当前已超出可分配容量!");
 		}
 		for(int i=1; i<=sheet.getLastRowNum(); i++){
 //			String name = PoiHelper.getString(sheet, i, 0);
@@ -75,7 +75,7 @@ public class CustomerServiceImpl extends BusinessBaseServiceImpl<Customer, Custo
 				continue;
 			}
 			if (isExistCustomer(mobile,clientId,null)) {
-				stringBuffer.append("第"+(i+1)+"行电话号码已存在(客户库/坐席库)：【"+mobile+"】！ \n");
+				stringBuffer.append("第"+(i+1)+"行号码已存在(客户库/坐席库)：【"+mobile+"】！ \n");
 				//throw new ApplicationException("第"+(i+1)+"行电话号码已存在(客户库/坐席库)：【"+mobile+"】！");
 				//重复的跳过
 				continue;
@@ -133,10 +133,7 @@ public class CustomerServiceImpl extends BusinessBaseServiceImpl<Customer, Custo
 		return null;
 	}
 	
-	
-	/**
-	 * 客户拨打回馈：联系状态;接受状态;客户分类
-	 */
+
 	@Override
 	public void callBack(String mobile,
 			ContactState contactState,

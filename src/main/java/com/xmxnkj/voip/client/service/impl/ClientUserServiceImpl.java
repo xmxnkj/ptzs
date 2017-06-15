@@ -106,12 +106,12 @@ public class ClientUserServiceImpl extends BusinessBaseServiceImpl<ClientUser, C
 					clientAndRoleService.deleteRole(id);
 					listJson.setSuccess(true);
 				}else{
-					listJson.setMessage("请先将该用户移除部门，再进行删除！");
+					listJson.setMessage("请先将该用户，再进行删除！");
 					listJson.setSuccess(false);
 					return listJson;
 				}
 			}else{
-				listJson.setMessage("该用户不存在！");
+				listJson.setMessage("不存在！");
 				listJson.setSuccess(false);
 				return listJson;
 			}

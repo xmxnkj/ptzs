@@ -201,7 +201,7 @@ public class DeptServiceImpl extends BusinessBaseServiceImpl<Dept, DeptQuery> im
 		Dept dept = getById(higherDeptId);
 		Integer level = dept.getLevel();
 		do{
-			//查询上级部门
+			//查询上级
 			if(dept.getId().equals(ownDeptId)){	
 				return true;
 			}
