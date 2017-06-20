@@ -62,10 +62,10 @@ public class ClientPayRecordServiceImpl extends BusinessBaseServiceImpl<ClientPa
 			List<ClientPayRecord> list = getEntities(query);
 			if (list!=null&&list.size()>0) {
 				if (!list.get(0).getId().equals(clientPayRecord.getId())) {
-					throw new ApplicationException("只能废除当日最新已缴费单据！");
+					throw new ApplicationException("只能废除当日最新！");
 				}
 			}else {
-				throw new ApplicationException("只能废除当日最新已缴费单据！");
+				throw new ApplicationException("只能废除当日最新！");
 			}
 			client.setEffectiveDate(clientPayRecord.getLastExpireDate());
 			clientService.save(client);
@@ -93,7 +93,7 @@ public class ClientPayRecordServiceImpl extends BusinessBaseServiceImpl<ClientPa
 		return clientPayRecord;
 	}
 	/**
-	 * 生成单号
+	 * 生成
 	 * @param clientId
 	 * @return
 	 */
@@ -114,7 +114,7 @@ public class ClientPayRecordServiceImpl extends BusinessBaseServiceImpl<ClientPa
 		return code;
 	}
 	/**
-	 * 检测单号是否重复
+	 * 检测是否重复
 	 */
 	public Boolean checkNumber(String clientId,String code){
 		Boolean flag = false;

@@ -8,6 +8,6 @@ import com.xmszit.voip.client.entity.query.ClientAndRoleQuery;
 public interface ClientAndRoleService extends BusinessBaseService<ClientAndRole, ClientAndRoleQuery> {
 	public void deleteRole(String ClientUserId);
 	
-	//修改角色
+	//修改
 	public void updateClientAndRole(ClientUser clientUser,String loginClientId);
 }

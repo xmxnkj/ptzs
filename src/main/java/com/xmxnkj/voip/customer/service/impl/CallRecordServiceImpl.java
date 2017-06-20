@@ -23,7 +23,7 @@ public class CallRecordServiceImpl extends BusinessBaseServiceImpl<CallRecord, C
 		getDao().delCallRecord(customerIds);
 	}
 	/**
-	 * 通话录音保存
+	 * 监控保存
 	 */
 	public void saveCallRecord(CallRecord callRecord) {
 		if (callRecord!=null&&StringUtils.isEmpty(callRecord.getClientId())) {
