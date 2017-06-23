@@ -12,7 +12,7 @@ import com.xmszit.voip.customer.entity.query.CallRecordQuery;
 @Repository
 public class CallRecordDaoImpl extends SimpleHibernate4Dao<CallRecord, CallRecordQuery> implements CallRecordDao{
 	/**
-	 * 删除所有关联的客户通话记录
+	 * 删除所有关联的记录
 	 */
 	@Override
 	public void delCallRecord(String [] customerIds){
