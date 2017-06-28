@@ -78,7 +78,7 @@
 
 	
 
-	<dependencies>
+	<dependencies><!-- 这个元素描述了所有与当前项目相关的依赖 -->
 		<!-- junit -->
 		<dependency>
 			<groupId>junit</groupId>
